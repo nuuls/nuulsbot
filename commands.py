@@ -5,7 +5,7 @@ from threading import Thread
 import json
 from settings import ADMINS, BANPHRASES
 from myd import myd
-from created import created
+from created import created, accage
 import random
 from pyramid import Pyramid
 bot = Bot()
@@ -166,6 +166,9 @@ class Commands():
 
             if "!created" in msg.lower():
                 bot.say(created(user, msg))
+
+            if "!accage" in msg.lower():
+                bot.say(accage(user, msg))
 
             if "!rate" in msg.lower():
                 a = random.randint(1, 10)
