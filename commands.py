@@ -24,15 +24,6 @@ class Commands():
         coms = json.load(simplecoms)
         print("coms loaded")
 
-    def dungeonwait(self, user):
-        time.sleep(self.waittime)
-        msg = Dungeon(user).enter()
-        print(self.indungeon)
-        self.indungeon[user] = False
-        print(self.indungeon)
-        bot.whisper(user, msg)
-        self.steal = False
-
     def addcom(self, trigger, response):
         try:
             self.coms[trigger.lower()] = response
@@ -127,17 +118,17 @@ class Commands():
                 except:
                     print("circle didnt work")
 
-            if "!hangman " in msg.lower() and user in ADMINS:
+            """if "!hangman " in msg.lower() and user in ADMINS:
                 self.hangman = Hangman()
                 word = msg.split(" ")
                 self.hangman.word = word[1]
                 for _ in word:
                     self.hangman.word_guessed.append("_")
-                bot.say("a game of hangman has started, guess with !h and a singe letter PogChamp")
+                bot.say("a game of hangman has started, guess with !h and a single letter PogChamp")"""
 
-            if "!h " in msg.lower():
+            """if "!h " in msg.lower():
                 guess = msg.split(" ")
-                self.hangman.hangman(user, guess[1])
+                self.hangman.hangman(user, guess[1])"""
 
             if "!8ball " in msg.lower():
                 tempmsg = user + ", " + ball(msg)
