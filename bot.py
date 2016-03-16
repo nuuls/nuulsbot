@@ -76,7 +76,6 @@ class Bot():
                     if line.startswith("PING"):
                         print(line)
                         self.send_raw(s, line.replace("PING", "PONG"))
-                        print("ponged")
             except:
                 print("no longer ponging")
                 need_to_pong = False
