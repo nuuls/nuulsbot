@@ -17,13 +17,14 @@ class Main():
         self.bot = Bot()
         self.q = Queue()
         self.wq = Queue()
-        self.rs = self.bot.conn()
         self.bot.start()
-        self.bot.join(self.rs, CHANNEL)
         self.wr = socket.socket()
+        self.rs = self.bot.rs
+        self.rs = self.bot.conn(s=self.rs)
         self.wr = self.bot.conn(s=self.wr, HOST=WHISPERHOST, PORT=WHISPERPORT)
         self.checkCom = Commands().checkCom
         self.uptime = time.time()
+        self.bot.join(CHANNEL)
 
     def listen(self):
 
@@ -60,6 +61,11 @@ class Main():
         message = separate[2]
         return message
 
+    def getChannel(self, line):
+        seperate = line.split("#", 1)
+        channel = seperate[1].split(" ")[0]
+        return channel
+
     def read(self):
 
         while True:
@@ -73,13 +79,14 @@ class Main():
             elif "PRIVMSG" in line:
                 user = self.getUser(line)
                 msg = self.getMessage(line)
+                channel = self.getChannel(line)
 
                 try:
-                    print((user + ": " + msg).encode(sys.stdout.encoding, errors="ignore"))
+                    print((channel + "# " + user + ": " + msg).encode(sys.stdout.encoding, errors="ignore"))
                 except:
                     pass
 
-                self.checkCom(user, msg)
+                self.checkCom(user, msg, channel)
 
             else:
                 print(line)

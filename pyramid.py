@@ -10,7 +10,7 @@ class Pyramid:
         self.going_down = False
         self.bot = Bot()
 
-    def on_pubmsg(self, user, message, steal=True):
+    def on_pubmsg(self, user, message, channel, steal=True):
        # if source.username == 'twitchnotify':
          #   return
 
@@ -61,7 +61,7 @@ class Pyramid:
                                 }
 
                                 if peak_length > 2:
-                                    self.bot.say("{user} has finished a {width} {thing} pyramid Kappa //".format(user=user, width=peak_length, thing=pyramid_thing))
+                                    self.bot.say("{user} has finished a {width} {thing} pyramid Kappa //".format(user=user, width=peak_length, thing=pyramid_thing), channel=channel)
                                     pass
                                 self.data = []
                                 self.going_down = False

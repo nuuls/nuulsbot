@@ -11,6 +11,7 @@ class Bot():
     mains = socket.socket()
     secs = socket.socket()
     ws = socket.socket()
+    rs = socket.socket()
 
     def __init__(self):
         self.last_msg_sent = time.time()
@@ -25,9 +26,13 @@ class Bot():
         print("connected")
         return s
 
-    def join(self, s, channel):
-        s.send(("JOIN #" + channel + "\r\n").encode("utf-8"))
+    def join(self, channel):
+        self.rs.send(("JOIN #" + channel + "\r\n").encode("utf-8"))
         print("joined " + channel)
+
+    def part(self, channel):
+        self.rs.send(("PART #" + channel + "\r\n").encode("utf-8"))
+        print("left " + channel)
 
     def send_raw(self, s, msg):
         s.send((msg + "\r\n").encode("utf-8"))
