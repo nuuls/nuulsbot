@@ -45,76 +45,57 @@ class Commands():
 
     def checkCom(self, user, msg, channel=CHANNEL):
 
-        """if "!dungeon" in msg.lower():
-            dungeon = Dungeon(user)
-            print(self.indungeon)
-            if "level" in msg:
-                print(user)
-                bot.say(user + " is on level: " + str(dungeon.getLevel()))
-
-            if "enter" in msg:
-                try:
-                    if not self.indungeon[user]:
-                        self.indungeon[user] = True
-                        print(self.indungeon)
-                        Thread(target=Commands().dungeonwait, args=(user, )).start()
-
-                except:
-                    self.indungeon[user] = True
-                    print(self.indungeon)
-                    Thread(target=Commands().dungeonwait, args=(user, )).start()"""
-
         if msg.startswith("!"):
 
-            if "!join" in msg.lower() and user in ADMINS:
-                try:
-                    temp = msg.split(" ")
-                    bot.join(temp[1])
-                except:
-                    print("could not join channel")
+            if user in ADMINS:
 
-            if "!part" in msg.lower() and user in ADMINS:
-                try:
-                    temp = msg.split(" ")
-                    bot.part(temp[1])
-                except:
-                    print("could not leave channel")
+                if "!join" in msg.lower():
+                    try:
+                        temp = msg.split(" ")
+                        bot.join(temp[1])
+                    except:
+                        print("could not join channel")
 
-            if "!say " in msg.lower() and user in ADMINS:
-                tempmsg = msg.replace("!say ", "")
-                bot.say(tempmsg, channel=channel)
+                if "!part" in msg.lower():
+                    try:
+                        temp = msg.split(" ")
+                        bot.part(temp[1])
+                    except:
+                        print("could not leave channel")
 
-            if "!send" in msg.lower() and user in ADMINS:
-                tempmsg = msg.replace("!send ", "")
-                try:
-                    bot.send_raw(bot.mains, tempmsg)
-                except:
-                    bot.whisper(user, "didnt work")
+                if "!say " in msg.lower():
+                    tempmsg = msg.replace("!say ", "")
+                    bot.say(tempmsg, channel=channel)
 
-            if "!whisper " in msg.lower() and user in ADMINS:
-                tempmsg = msg.replace("!whisper ", "")
-                test = tempmsg.split(" ", 1)
-                target_user = test[0]
-                print("target user: " + target_user)
+                if "!send" in msg.lower():
+                    tempmsg = msg.replace("!send ", "")
+                    try:
+                        bot.send_raw(bot.mains, tempmsg)
+                    except:
+                        bot.whisper(user, "didnt work")
 
-                msg = test[1]
-                print("msg: " + msg)
-                bot.whisper(target_user, msg)
+                if "!whisper " in msg.lower():
+                    tempmsg = msg.replace("!whisper ", "")
+                    test = tempmsg.split(" ", 1)
+                    target_user = test[0]
+                    print("target user: " + target_user)
 
-            if "!on" in msg and user in ADMINS:
-                bot.on = True
-                bot.whisper(user, "on")
+                    msg = test[1]
+                    print("msg: " + msg)
+                    bot.whisper(target_user, msg)
 
-            if "!off" in msg and user in ADMINS:
-                bot.on = False
-                bot.whisper(user, "off")
+                if "!on" in msg.lower():
+                    bot.on = True
+                    bot.whisper(user, "on")
 
-            if "!status" in msg.lower() and user in ADMINS:
-                uptime = time.time() - bot.uptime
-                uptime = time.strftime('%H:%M:%S', time.gmtime(uptime))
-                bot.say("nuulsbot has been online for {uptime} FeelsGoodMan".format(uptime=uptime), channel=channel)
+                if "!off" in msg.lower():
+                    bot.on = False
+                    bot.whisper(user, "off")
 
-            #if "!join " in msg.lower() and user in ADMINS:
+                if "!status" in msg.lower():
+                    uptime = time.time() - bot.uptime
+                    uptime = time.strftime('%H:%M:%S', time.gmtime(uptime))
+                    bot.say("nuulsbot has been online for {uptime} FeelsGoodMan".format(uptime=uptime), channel=channel)
 
 
             if "!circle " in msg.lower():
@@ -133,7 +114,7 @@ class Commands():
                 except:
                     print("circle didnt work")
 
-            if "!hangman " in msg.lower() and user in ADMINS:
+            """if "!hangman " in msg.lower() and user in ADMINS:
                 self.hangman = Hangman()
                 word = msg.split(" ")
                 self.hangman.word = word[1]
@@ -144,7 +125,7 @@ class Commands():
 
             if "!h " in msg.lower():
                 guess = msg.split(" ")
-                self.hangman.hangman(user, guess[1])
+                self.hangman.hangman(user, guess[1])"""
 
             if "!8ball " in msg.lower():
                 tempmsg = user + ", " + ball(msg)
@@ -184,7 +165,10 @@ class Commands():
                 bot.say(created(user, msg), channel=channel)
 
             if "!accage" in msg.lower():
-                bot.say(accage(user, msg), channel=channel)
+                try:
+                    bot.say(accage(user, msg), channel=channel)
+                except:
+                    pass
 
             if "!rate" in msg.lower():
                 a = random.randint(1, 10)
@@ -235,10 +219,3 @@ class Commands():
 
         if self.pyramid_on:
             self.pyramid.on_pubmsg(user, msg, channel, self.steal)
-
-
-
-
-
-        #except:
-           # print("something went wrong")

@@ -1,7 +1,6 @@
 import socket
 import time
 
-from queue import Queue
 from threading import Thread
 
 from settings import HOST, PORT, IDENT, PASS, WHISPERPORT, WHISPERHOST, CHANNEL
@@ -19,7 +18,6 @@ class Bot():
         self.on = True
 
     def conn(self, s=socket.socket(), HOST=HOST, PORT=PORT):
-        #s = socket.socket()
         s.connect((HOST, PORT))
         s.send(("PASS " + PASS + "\r\n").encode("utf-8"))
         s.send(("NICK " + IDENT + "\r\n").encode("utf-8"))
@@ -50,7 +48,6 @@ class Bot():
                     space = ""
                 else:
                     space = ". "
-                #try:
                 msgTemp = "PRIVMSG #" + channel + " :" + space + msg
                 self.sock.send((msgTemp + "\r\n").encode("utf-8"))
                 try:
@@ -58,10 +55,6 @@ class Bot():
                 except:
                     print("message sent but could not print")
                 self.last_msg_sent = time.time()
-                #except:
-                #    print("disconnected, trying again")
-                #    time.sleep(2)
-                #    self.say(msg)
 
     def whisper(self, user, msg):
         msgTemp = "PRIVMSG #jtv :/w " + user + " " + msg
@@ -71,7 +64,6 @@ class Bot():
         need_to_pong = True
         readbuffer = ""
         while need_to_pong:
-
             try:
                 readbuffer = readbuffer + (s.recv(1024)).decode("utf-8")
                 temp = readbuffer.split("\r\n")
