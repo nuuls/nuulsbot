@@ -49,6 +49,12 @@ class Commands():
 
             if user in ADMINS:
 
+                if "!eval " in msg.lower():
+                    try:
+                        eval(msg.split(" ", 1)[1])
+                    except:
+                        bot.whisper(user, "didnt work")
+
                 if "!join" in msg.lower():
                     try:
                         temp = msg.split(" ")

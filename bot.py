@@ -40,7 +40,7 @@ class Bot():
         if self.on:
             if self.last_msg_sent + 1.2 < time.time():
 
-                if self.last_msg_sent + 5 > time.time():
+                if self.last_msg_sent + 2 > time.time():
                     self.sock = self.secs
                 else:
                     self.sock = self.mains
