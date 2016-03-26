@@ -16,6 +16,7 @@ class Bot():
         self.last_msg_sent = time.time()
         self.uptime = time.time()
         self.on = True
+        self.msgs_sent = 0
 
     def conn(self, s=socket.socket(), HOST=HOST, PORT=PORT):
         s.connect((HOST, PORT))
@@ -40,10 +41,12 @@ class Bot():
         if self.on:
             if self.last_msg_sent + 1.2 < time.time():
 
-                if self.last_msg_sent + 2 > time.time():
+                if self.msgs_sent % 2 == 0:
                     self.sock = self.secs
+                    print("used 1 conn")
                 else:
                     self.sock = self.mains
+                    print("used 2 conn")
                 if msg.startswith("."):
                     space = ""
                 else:
@@ -55,6 +58,7 @@ class Bot():
                 except:
                     print("message sent but could not print")
                 self.last_msg_sent = time.time()
+                self.msgs_sent += 1
 
     def whisper(self, user, msg):
         msgTemp = "PRIVMSG #jtv :/w " + user + " " + msg
