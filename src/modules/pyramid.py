@@ -1,4 +1,4 @@
-from bot import Bot
+from src.controllers.irc import Irc as Bot
 
 class Pyramid:
 
