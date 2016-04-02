@@ -6,6 +6,7 @@ from queue import Queue
 
 from src.controllers.parse import parse
 from settings import PASS, IDENT, HOST, PORT, GROUPHOST, GROUPPORT, CHANNEL
+from src.modules.commands import Commands
 
 class Irc:
 
@@ -21,6 +22,7 @@ class Irc:
         self.connlist_read = []
         self.mod = {}
         self.silent = {}
+        self.uptime = time.time()
 
     def send_raw(self, s, msg):
         s.send((msg + "\r\n").encode("utf-8"))
@@ -38,7 +40,9 @@ class Irc:
                 self.connlist[s] = 0
             Thread(target=self.listen, args=(s,)).start()
         else:
-            self.send_raw(s, "NICK " + "justinfan69")
+            #self.send_raw(s, "NICK " + "justinfan69")
+            s.send(("PASS " + PASS + "\r\n").encode("utf-8"))
+            self.send_raw(s, "NICK " + IDENT)
             Thread(target=self.listen, args=(s,), kwargs={"read": True}).start()
             self.send_raw(s, "CAP REQ :twitch.tv/tags")
             self.connlist_read.append(s)
@@ -48,12 +52,15 @@ class Irc:
         return s
 
     def join(self, channel, silent=False):
-        self.send_raw(self.connlist_read[0], "JOIN #" + channel)
+        self.send_raw(self.connlist_read[0], "JOIN #" + channel.lower())
         self.mod[channel] = False
         self.silent[channel] = silent
+        self.commands[channel] = Commands()
+        self.commands[channel].bot = self.bot
+        self.commands[channel].pyramid.bot = self.bot
 
-    def part(self, s, channel):
-        self.send_raw(s, "JOIN #" + channel)
+    def part(self, channel):
+        self.send_raw(self.connlist_read[0], "PART #" + channel)
 
     def say(self, msg, channel=CHANNEL[0]):
         if not channel in self.last_msg_sent:

@@ -1,7 +1,7 @@
 def parse(line):
     data = {}
     line = line.split(";", 7)
-    data["user"] = line[1][13:].lower()
+    data["user"] = line[7].split(":", 2)[1].split("!")[0]
     data["emotes"] = line[2][7:]
 
     if "1" in line[3]:

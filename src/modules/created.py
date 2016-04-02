@@ -55,6 +55,8 @@ def accage(user, message):
         data = f.decode("utf-8")
         #data = json.loads((f))
         #print(data)
+        if "br /" in data:
+            raise Exception("xD")
 
         return "{user} was created {data} ago Keepo".format(user=user_from_msg, data=data)
 

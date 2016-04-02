@@ -17,11 +17,17 @@ class Main:
         self.bot.conn()
         self.bot.whisperconn = self.bot.conn(HOST=GROUPHOST, PORT=GROUPPORT, whisper=True)
         Thread(target=self.bot.ratelimit).start()
-        self.commands = Commands()
-        self.commands.bot = self.bot
+        self.commands = {}
+        self.bot.commands = self.commands
+        self.bot.bot = self.bot
+
         time.sleep(1)
         for chan in CHANNEL:
             self.bot.join(chan)
+            self.commands[chan] = Commands()
+            self.commands[chan].bot = self.bot
+            self.commands[chan].pyramid.bot = self.bot
+
 
 
     def main(self):
@@ -48,7 +54,7 @@ class Main:
                     print(e)
             if not bot.silent[channel]:
                 try:
-                    self.commands.checkCom(user, msg, channel)
+                    self.commands[channel].checkCom(user, msg, channel)
                 except Exception as e:
                     print(e)
 

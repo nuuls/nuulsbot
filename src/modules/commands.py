@@ -9,15 +9,14 @@ from settings import ADMIN, BANPHRASES, CHANNEL
 from src.modules.myd import myd
 from src.modules.created import created, accage
 from src.modules.pyramid import Pyramid
-from src.controllers.irc import Irc
+from src.modules.chatters import *
 
 
 class Commands():
-    pyramid = Pyramid()
-    pyramid_on = False
+    def __init__(self):
+        self.pyramid = Pyramid()
+        self.pyramid_on = False
 
-    waittime = 30
-    indungeon = {}
     with open("src/modules/simplecom.json", "r") as simplecoms:
         coms = json.load(simplecoms)
         print("coms loaded")
@@ -28,7 +27,7 @@ class Commands():
             with open("src/modules/simplecom.json", "w") as simplecoms:
                 json.dump(self.coms, simplecoms)
             print("command added")
-            self.bot.whisper(user, "command " + trigger + " has been added KKona")
+
         except:
             pass
 
@@ -37,7 +36,7 @@ class Commands():
             del self.coms[trigger]
             with open("src/modules/simplecom.json", "w") as simplecoms:
                 json.dump(self.coms, simplecoms)
-            self.bot.whisper(user, "command %s has been removed" % (trigger))
+
         except:
             print("didnt work")
 
@@ -45,9 +44,9 @@ class Commands():
 
         if msg.startswith("!"):
 
-            if False:
+            if user == ADMIN:
 
-                if "!eval " in msg.lower():
+                """if "!eval " in msg.lower():
                     try:
                         eval(msg.split(" ", 1)[1])
                     except:
@@ -94,12 +93,12 @@ class Commands():
 
                 if "!off" in msg.lower():
                     self.bot.on = False
-                    self.bot.whisper(user, "off")
+                    self.bot.whisper(user, "off")"""
 
                 if "!status" in msg.lower():
                     uptime = time.time() - self.bot.uptime
                     uptime = time.strftime('%H:%M:%S', time.gmtime(uptime))
-                    self.bot.say("nuulsself.bot has been online for {uptime} FeelsGoodMan".format(uptime=uptime), channel=channel)
+                    self.bot.say("nuulsbot has been online for {uptime} FeelsGoodMan".format(uptime=uptime), channel=channel)
 
 
             if "!circle " in msg.lower():
@@ -142,6 +141,7 @@ class Commands():
                     trigger = tempmsg[0]
                     response = tempmsg[1]
                     Commands.addcom(self, trigger.lower(), response)
+                    self.bot.whisper(user, "command " + trigger + " has been added KKona")
                 except:
                     pass
 
@@ -150,6 +150,7 @@ class Commands():
                     tempmsg = msg.split(" ", 1)
                     trigger = tempmsg[1]
                     Commands.delcom(self, trigger.lower())
+                    self.bot.whisper(user, "command %s has been removed" % (trigger))
                 except:
                     pass
 
@@ -161,6 +162,29 @@ class Commands():
 
                 except:
                     pass
+
+            if "!chatters " in msg.lower():
+                chann = msg.split(" ")[1]
+                if "." in chann:
+                    return
+                chatters = "0"
+                viewers = "offline"
+
+                try:
+                    chatters = chatter(chann)
+                except Exception as e:
+                    print(e)
+                try:
+                    viewers = viewer(chann)
+                except Exception as e:
+                    print(e)
+                self.bot.say("current channel info for %s: chatters: %s viewers: %s pajaHop" %(chann, str(chatters), str(viewers)), channel=channel)
+            if "!viewers " in msg.lower():
+                try:
+                    chann = msg.split(" ")[1]
+                    self.bot.say(str(viewer(chann)))
+                except Exception as e:
+                    print(e)
 
             if "!myd" in msg.lower():
                 self.bot.say(user + "'s dick is " + myd(), channel=channel)
@@ -174,29 +198,11 @@ class Commands():
                 except:
                     pass
 
-            if "!rate" in msg.lower():
+            if "!rateme" in msg.lower():
                 a = random.randint(1, 10)
                 pool = {1:"(puke)", 2:"DansGame", 3:"EleGiggle", 4:"4Head", 5:":)", 6:"FeelsGoodMan", 7:"SeemsGood", 8:"PogChamp", 9:"nymnWink", 10:"Kappa"}
 
-                if "!rateme" in msg.lower():
-                    self.bot.say(("I rate {user} {a} out of 10 {emote}".format(user=user, a=a, emote=pool[a])), channel=channel)
-
-                else:
-                    lowermsg = msg.lower()
-                    for item in BANPHRASES:
-                        if item in lowermsg:
-                            return False
-                    if "pajlada" in lowermsg:
-                        msg = lowermsg.replace("pajlada", "paj-lada")
-
-                    try:
-                        tempmsg = msg.split(" ")
-                        target = tempmsg.pop(1)
-                        self.bot.say("I rate {target} {a} out of 10 {emote}".format(target=target, a=a, emote=pool[a]), channel=channel)
-                    except:
-                        self.bot.say(("I rate {user} {a} out of 10 {emote}".format(user=user, a=a, emote=pool[a])), channel=channel)
-
-
+                self.bot.say(("I rate {user} {a} out of 10 {emote}".format(user=user, a=a, emote=pool[a])), channel=channel)
 
             if "pyramid" in msg.lower() and user == ADMIN:
                 if "steal" in msg.lower():
@@ -211,7 +217,7 @@ class Commands():
                 if "display" in msg.lower():
                     self.pyramid_on = True
                     self.steal = False
-                    self.bot.whisper(user, "now displaying pyramids")
+                    self.bot.whisper(user, "now displaying pyramids in %s" % channel)
 
         msgtemp = msg.lower().split(" ")
 
