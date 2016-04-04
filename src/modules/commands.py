@@ -50,23 +50,27 @@ class Commands():
                     try:
                         eval(msg.split(" ", 1)[1])
                     except:
-                        self.bot.whisper(user, "didnt work")
+                        self.bot.whisper(user, "didnt work")"""
 
-                if "!join" in msg.lower():
+                if "!join#" in msg.lower():
+                    if "-s" in msg:
+                        silent = True
+                    else:
+                        silent = False
                     try:
                         temp = msg.split(" ")
-                        self.bot.join(temp[1])
+                        self.bot.join(temp[1], silent=silent)
                     except:
                         print("could not join channel")
 
-                if "!part" in msg.lower():
+                if "!part#" in msg.lower():
                     try:
                         temp = msg.split(" ")
                         self.bot.part(temp[1])
                     except:
                         print("could not leave channel")
 
-                if "!say " in msg.lower():
+                """if "!say " in msg.lower():
                     tempmsg = msg.replace("!say ", "")
                     self.bot.say(tempmsg, channel=channel)
 

@@ -98,9 +98,13 @@ class Irc:
                         print(line)
                     elif "PRIVMSG" in line:
                         msg = parse(line)
-                        self.q.put(msg)
                         if msg["user"] == IDENT:
                             self.mod[msg["channel"]] = msg["mod"]
+                        else:
+                            self.q.put(msg)
+                        if msg["user"] == IDENT:
+                            self.mod[msg["channel"]] = msg["mod"]
+
                     elif "WHISPER" in line:
                         data = {}
                         data["user"] = line.split(":", 2)[1].split("!", 1)[0]
