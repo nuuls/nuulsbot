@@ -81,8 +81,7 @@ class Irc:
                 self.conn()
 
     def whisper(self, user, msg):
-        #self.send_raw(self.whisperconn, "PRIVMSG #jtv :/w %s %s" % (user, msg))
-        self.say("PRIVMSG #jtv :/w %s %s" % (user, msg))
+        self.say(".w %s %s" %(user, msg))
 
     def listen(self, s, read=False):
         readbuffer = ""
