@@ -5,7 +5,7 @@ from threading import Thread
 from queue import Queue
 
 from src.controllers.parse import Parse
-from settings import PASS, IDENT, HOST, PORT, GROUPHOST, GROUPPORT, CHANNEL
+from settings import PASS, IDENT, HOST, PORT, CHANNEL
 from src.modules.commands import Commands
 
 class Irc:
@@ -29,9 +29,8 @@ class Irc:
         self.msgs_sent_total += 1
         print("sent: " + msg)
 
-    def conn(self, s=None, HOST=HOST, PORT=PORT, anon=False, whisper=False):
-        if not s:
-            s = socket.socket()
+    def conn(self, anon=False, whisper=False):
+        s = socket.socket()
         s.connect((HOST, PORT))
         if not anon:
             s.send(("PASS " + PASS + "\r\n").encode("utf-8"))
@@ -82,7 +81,8 @@ class Irc:
                 self.conn()
 
     def whisper(self, user, msg):
-        self.send_raw(self.whisperconn, "PRIVMSG #jtv :/w %s %s" % (user, msg))
+        #self.send_raw(self.whisperconn, "PRIVMSG #jtv :/w %s %s" % (user, msg))
+        self.say("PRIVMSG #jtv :/w %s %s" % (user, msg))
 
     def listen(self, s, read=False):
         readbuffer = ""

@@ -4,7 +4,7 @@ import sys
 from threading import Thread
 
 from src.controllers.irc import Irc
-from settings import CHANNEL, GROUPHOST, GROUPPORT, ADMIN
+from settings import CHANNEL, ADMIN
 from src.modules.commands import Commands
 
 class Main:
@@ -15,7 +15,6 @@ class Main:
         self.whisperq = self.bot.whisperq
         self.bot.conn(anon=True)
         self.bot.conn()
-        self.bot.whisperconn = self.bot.conn(HOST=GROUPHOST, PORT=GROUPPORT, whisper=True)
         Thread(target=self.bot.ratelimit).start()
         self.commands = {}
         self.bot.commands = self.commands
