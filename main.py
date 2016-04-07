@@ -28,16 +28,14 @@ class Main:
             self.commands[chan].bot = self.bot
             self.commands[chan].pyramid.bot = self.bot
 
-
-
     def main(self):
         bot = self.bot
         while True:
-            line = self.bot.q.get()
+            source = self.bot.q.get()
             try:
-                user = line["user"]
-                msg = line["msg"]
-                channel = line["channel"]
+                user = source.user
+                msg = source.msg
+                channel = source.channel
                 print("%s # %s : %s" % (channel, user, msg))
 
             except:
@@ -54,10 +52,11 @@ class Main:
                     print(e)
             if not bot.silent[channel]:
                 try:
+                    if source.me:
+                        bot.say("nice me LUL", channel=channel)
                     self.commands[channel].checkCom(user, msg, channel)
                 except Exception as e:
                     print(e)
-
 
     def whisper(self):
         bot = self.bot

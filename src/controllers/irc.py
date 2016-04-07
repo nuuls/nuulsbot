@@ -4,7 +4,7 @@ import time
 from threading import Thread
 from queue import Queue
 
-from src.controllers.parse import parse
+from src.controllers.parse import Parse
 from settings import PASS, IDENT, HOST, PORT, GROUPHOST, GROUPPORT, CHANNEL
 from src.modules.commands import Commands
 
@@ -92,28 +92,28 @@ class Irc:
             readbuffer = temp.pop()
             for line in temp:
                 #print(line)
-                try:
-                    if line.startswith("PING"):
-                        self.send_raw(s, line.replace("PING", "PONG"))
-                        print(line)
-                    elif "PRIVMSG" in line:
-                        msg = parse(line)
-                        if msg["user"] == IDENT:
-                            self.mod[msg["channel"]] = msg["mod"]
-                        else:
-                            self.q.put(msg)
-                        if msg["user"] == IDENT:
-                            self.mod[msg["channel"]] = msg["mod"]
-
-                    elif "WHISPER" in line:
-                        data = {}
-                        data["user"] = line.split(":", 2)[1].split("!", 1)[0]
-                        data["message"] = line.split(":", 2)[2]
-                        self.whisperq.put(data)
+                #try:
+                if line.startswith("PING"):
+                    self.send_raw(s, line.replace("PING", "PONG"))
+                    print(line)
+                elif "PRIVMSG" in line:
+                    source = Parse(line)
+                    if source.user == IDENT:
+                        self.mod[source.channel] = source.mod
                     else:
-                        print(line)
-                except:
-                    pass
+                        self.q.put(source)
+                    if source.user == IDENT:
+                        self.mod[source.channel] = source.mod
+
+                elif "WHISPER" in line:
+                    data = {}
+                    data["user"] = line.split(":", 2)[1].split("!", 1)[0]
+                    data["message"] = line.split(":", 2)[2]
+                    self.whisperq.put(data)
+                else:
+                    print(line)
+                #except:
+                    #pass
 
     def ratelimit(self):
         while True:

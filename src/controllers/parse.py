@@ -1,21 +1,27 @@
-def parse(line):
-    data = {}
-    line = line.split(";", 7)
-    data["user"] = line[7].split(":", 2)[1].split("!")[0]
-    data["emotes"] = line[2][7:]
+class Parse:
 
-    if "1" in line[3]:
-        data["mod"] = True
-    else:
-        data["mod"] = False
+    def __init__(self, line):
+        line = line.split(";", 7)
+        self.user = line[7].split(":", 2)[1].split("!")[0]
+        self.emotes = line[2][7:]
 
-    if "1" in line[5]:
-        data["sub"] = True
-    else:
-        data["sub"] = False
+        if "1" in line[3]:
+            self.mod = True
+        else:
+            self.mod = False
 
-    data["channel"] = line[7].split("#")[1][:line[7].split("#")[1].find(" ")]
+        if "1" in line[5]:
+            self.sub = True
+        else:
+            self.sub = False
 
-    data["msg"] = line[7].split(":", 2)[2]
+        self.channel = line[7].split("#")[1][:line[7].split("#")[1].find(" ")]
 
-    return data
+        self.msg = line[7].split(":", 2)[2]
+        if self.msg.startswith("\x01ACTION "):
+            self.msg = self.msg.replace("\x01ACTION ", "")
+            if self.msg.endswith("\x01"):
+                self.msg = self.msg.replace("\x01", "")
+                self.me = True
+        else:
+            self.me = False
