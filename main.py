@@ -52,8 +52,6 @@ class Main:
                     print(e)
             if not bot.silent[channel]:
                 try:
-                    if source.me:
-                        bot.say("nice me LUL", channel=channel)
                     self.commands[channel].checkCom(user, msg, channel)
                 except Exception as e:
                     print(e)
