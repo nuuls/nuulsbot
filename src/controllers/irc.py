@@ -64,7 +64,7 @@ class Irc:
         if self.mod[channel] or self.last_msg_sent[channel] + 1.2 < time.time():
             #sock = self.connlist[self.msgs_sent_total % len(self.connlist)]
             s = min(self.connlist, key=self.connlist.get)
-            print("used connection %s" % str(self.msgs_sent_total % len(self.connlist)))
+            #print("used connection %s" % str(min(self.connlist, key=self.connlist.get)))
             if msg.startswith("."):
                 space = ""
             else:
@@ -91,9 +91,9 @@ class Irc:
                 #print(line)
             #    try:
                 if line.startswith("PING"):
-                    self.send_raw(s, line.replace("PING", "PONG"))
                     print(line)
-                if read:
+                    self.send_raw(s, line.replace("PING", "PONG"))
+                elif read:
                     if "PRIVMSG" in line:
                         source = Parse(line)
                         if source.user == IDENT:
