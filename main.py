@@ -13,7 +13,7 @@ class Main:
         self.bot = Irc()
         self.q = self.bot.q
         self.whisperq = self.bot.whisperq
-        self.bot.conn(anon=True)
+        self.bot.conn(read=True, whisper=True)
         self.bot.conn()
         Thread(target=self.bot.ratelimit).start()
         self.commands = {}

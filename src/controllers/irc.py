@@ -29,10 +29,10 @@ class Irc:
         self.msgs_sent_total += 1
         print("sent: " + msg)
 
-    def conn(self, anon=False, whisper=False):
+    def conn(self, read=False, whisper=False):
         s = socket.socket()
         s.connect((HOST, PORT))
-        if not anon:
+        if not read:
             s.send(("PASS " + PASS + "\r\n").encode("utf-8"))
             self.send_raw(s, "NICK " + IDENT)
             if not whisper:
@@ -54,9 +54,6 @@ class Irc:
         self.send_raw(self.connlist_read[0], "JOIN #" + channel.lower())
         self.mod[channel] = False
         self.silent[channel] = silent
-        self.commands[channel] = Commands()
-        self.commands[channel].bot = self.bot
-        self.commands[channel].pyramid.bot = self.bot
 
     def part(self, channel):
         self.send_raw(self.connlist_read[0], "PART #" + channel)
@@ -64,8 +61,6 @@ class Irc:
     def say(self, msg, channel=CHANNEL[0]):
         if not channel in self.last_msg_sent:
             self.last_msg_sent[channel] = 1.0
-        if not channel in self.mod:
-            self.mod[channel] = False
         if self.mod[channel] or self.last_msg_sent[channel] + 1.2 < time.time():
             #sock = self.connlist[self.msgs_sent_total % len(self.connlist)]
             s = min(self.connlist, key=self.connlist.get)
@@ -83,7 +78,8 @@ class Irc:
                 self.conn()
 
     def whisper(self, user, msg):
-        self.say(".w %s %s" %(user, msg))
+        #self.say(".w %s %s" % (user, msg))
+        self.send_raw(self.connlist_read[0], "PRIVMSG #nuuls :.w %s %s" % (user, msg))
 
     def listen(self, s, read=False):
         readbuffer = ""
@@ -93,28 +89,27 @@ class Irc:
             readbuffer = temp.pop()
             for line in temp:
                 #print(line)
-                #try:
+            #    try:
                 if line.startswith("PING"):
                     self.send_raw(s, line.replace("PING", "PONG"))
                     print(line)
-                elif "PRIVMSG" in line:
-                    source = Parse(line)
-                    if source.user == IDENT:
-                        self.mod[source.channel] = source.mod
-                    else:
-                        self.q.put(source)
-                    if source.user == IDENT:
-                        self.mod[source.channel] = source.mod
+                if read:
+                    if "PRIVMSG" in line:
+                        source = Parse(line)
+                        if source.user == IDENT:
+                            self.mod[source.channel] = source.mod
+                        else:
+                            self.q.put(source)
 
-                elif "WHISPER" in line:
-                    data = {}
-                    data["user"] = line.split(":", 2)[1].split("!", 1)[0]
-                    data["message"] = line.split(":", 2)[2]
-                    self.whisperq.put(data)
-                else:
-                    print(line)
-                #except:
-                    #pass
+                    elif "WHISPER" in line:
+                        data = {}
+                        data["user"] = line.split(":", 2)[1].split("!", 1)[0]
+                        data["message"] = line.split(":", 2)[2]
+                        self.whisperq.put(data)
+                    else:
+                        print(line)
+            #    except:
+                #    pass
 
     def ratelimit(self):
         while True:
