@@ -23,9 +23,7 @@ class Main:
         time.sleep(1)
         for chan in CHANNEL:
             self.bot.join(chan)
-            self.commands[chan] = Commands()
-            self.commands[chan].bot = self.bot
-            self.commands[chan].pyramid.bot = self.bot
+
 
     def main(self):
         bot = self.bot
@@ -51,7 +49,7 @@ class Main:
                     print(e)
             if not bot.silent[channel]:
                 try:
-                    self.commands[channel].checkCom(user, msg, channel)
+                    self.commands[channel].checkCom(user, msg, channel=channel)
                 except Exception as e:
                     print(e)
 

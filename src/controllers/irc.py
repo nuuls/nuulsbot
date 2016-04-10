@@ -54,6 +54,10 @@ class Irc:
         self.send_raw(self.connlist_read[0], "JOIN #" + channel.lower())
         self.mod[channel] = False
         self.silent[channel] = silent
+        self.bot.commands[channel] = Commands()
+        self.bot.commands[channel] = Commands()
+        self.bot.commands[channel].bot = self.bot
+        self.bot.commands[channel].pyramid.bot = self.bot
 
     def part(self, channel):
         self.send_raw(self.connlist_read[0], "PART #" + channel)
@@ -61,6 +65,8 @@ class Irc:
     def say(self, msg, channel=CHANNEL[0]):
         if not channel in self.last_msg_sent:
             self.last_msg_sent[channel] = 1.0
+        if not channel in self.mod:
+            self.mod[channel] = False
         if self.mod[channel] or self.last_msg_sent[channel] + 1.2 < time.time():
             #sock = self.connlist[self.msgs_sent_total % len(self.connlist)]
             s = min(self.connlist, key=self.connlist.get)
